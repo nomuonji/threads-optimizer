@@ -12,21 +12,17 @@ export async function POST(request: Request) {
         }
 
         const payload = await preparePromptPayload(accountId, limit || 15);
-        const { account, topPosts, referencePosts, recentPosts, drafts, tips, exemplaryPosts, systemInstruction } = payload;
+        const { account, topPosts, recentPosts, drafts } = payload;
 
         // Extract extraAvoid from recent posts
         const extraAvoid = recentPosts.map(p => p.text);
 
         const prompt = buildPrompt(
             topPosts,
-            referencePosts,
             recentPosts,
             drafts,
             extraAvoid,
-            tips,
-            exemplaryPosts,
             account.concept,
-            systemInstruction,
             account.minPostLength,
             account.maxPostLength
         );

@@ -1,15 +1,11 @@
-import type { DraftDoc, ExemplaryPost, PostDoc, Tip } from "@/lib/types";
+import type { DraftDoc, PostDoc } from "@/lib/types";
 
 export function buildPrompt(
     topPosts: PostDoc[],
-    referencePosts: Tip[],
     recentPosts: PostDoc[],
     drafts: DraftDoc[],
     extraAvoid: string[],
-    tips: Tip[],
-    exemplaryPosts: ExemplaryPost[],
     concept?: string,
-    systemInstruction?: string,
     minPostLength = 1,
     maxPostLength = 240,
 ) {
@@ -38,7 +34,7 @@ ${conceptSection}`;
         : `\n# 3. PAST POSTS (DUPLICATION PREVENTION)\n(No recent posts to avoid)\n`;
 
     return `
-${systemInstruction || "You are a creative social media content generator."}
+You are a creative social media content generator.
 
 # 1. TARGET CHARACTER COUNT
 Target: ${targetLength} characters (Absolute Max: ${maxPostLength})

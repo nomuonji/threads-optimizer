@@ -1,5 +1,6 @@
 import { cookies } from "next/headers";
 import { DashboardClient } from "./client";
+import { AccountProvider } from "@/components/account/account-provider";
 import {
     getRapidApiUsage,
     getAccounts,
@@ -70,13 +71,15 @@ export default async function DashboardPage() {
     }
 
     return (
-        <DashboardClient
-            initialAccounts={accounts}
-            initialApiUsage={apiUsage}
-            initialDrafts={initialDrafts}
-            initialAccountData={initialAccountData}
-            systemStatus={systemStatus}
-            errors={errors}
-        />
+        <AccountProvider accounts={accounts} initialSelectedAccountId={selectedAccount?.id ?? null}>
+            <DashboardClient
+                initialAccounts={accounts}
+                initialApiUsage={apiUsage}
+                initialDrafts={initialDrafts}
+                initialAccountData={initialAccountData}
+                systemStatus={systemStatus}
+                errors={errors}
+            />
+        </AccountProvider>
     );
 }

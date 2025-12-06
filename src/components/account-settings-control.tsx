@@ -11,6 +11,7 @@ type AccountSettingsControlProps = {
 export function AccountSettingsControl({ account, onAccountUpdate }: AccountSettingsControlProps) {
     const [concept, setConcept] = useState(account.concept ?? '');
     const [autoPostEnabled, setAutoPostEnabled] = useState(account.autoPostEnabled ?? false);
+    const [optimizationEnabled, setOptimizationEnabled] = useState(account.optimizationEnabled ?? false);
     const [postSchedule, setPostSchedule] = useState<string[]>(
         account.postSchedule && account.postSchedule.length > 0 ? account.postSchedule : ['']
     );
@@ -24,6 +25,7 @@ export function AccountSettingsControl({ account, onAccountUpdate }: AccountSett
     useEffect(() => {
         setConcept(account.concept ?? '');
         setAutoPostEnabled(account.autoPostEnabled ?? false);
+        setOptimizationEnabled(account.optimizationEnabled ?? false);
         setPostSchedule(account.postSchedule && account.postSchedule.length > 0 ? account.postSchedule : ['']);
         setMinPostLength(account.minPostLength ?? 1);
         setMaxPostLength(account.maxPostLength ?? 240);
@@ -56,6 +58,7 @@ export function AccountSettingsControl({ account, onAccountUpdate }: AccountSett
         const updatedData = {
             concept,
             autoPostEnabled,
+            optimizationEnabled,
             postSchedule: postSchedule.filter(t => t), // remove empty strings
             minPostLength,
             maxPostLength,
@@ -114,6 +117,17 @@ export function AccountSettingsControl({ account, onAccountUpdate }: AccountSett
                             className="rounded border-gray-300 text-primary shadow-sm focus:border-primary focus:ring-primary"
                         />
                         <span className="ml-2 text-sm text-muted-foreground">Enable auto-posting</span>
+                    </label>
+                </div>
+                <div>
+                    <label className="flex items-center">
+                        <input
+                            type="checkbox"
+                            checked={optimizationEnabled}
+                            onChange={(e) => setOptimizationEnabled(e.target.checked)}
+                            className="rounded border-gray-300 text-primary shadow-sm focus:border-primary focus:ring-primary"
+                        />
+                        <span className="ml-2 text-sm text-muted-foreground">Enable AI Optimization (Self-improvement system)</span>
                     </label>
                 </div>
                 <div>

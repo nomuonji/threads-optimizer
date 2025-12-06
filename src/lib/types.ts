@@ -2,18 +2,6 @@ export type Platform = "x" | "threads";
 export type MediaType = "text" | "image" | "video";
 export type DraftStatus = "draft" | "scheduled" | "published";
 
-export interface Tip {
-    id: string;
-    title: string;
-    text: string;
-    platform: Platform;
-    url: string;
-    author_handle: string;
-    account_ids?: string[];
-    created_at: string;
-    updated_at: string;
-}
-
 export interface AccountDoc {
     id: string;
     platform: Platform;
@@ -23,12 +11,12 @@ export interface AccountDoc {
     scopes: string[];
     concept?: string;
     autoPostEnabled?: boolean;
+    optimizationEnabled?: boolean;
     postSchedule?: string[];
     minPostLength?: number;
     maxPostLength?: number;
     r18Mode?: boolean;
     lastPostExecutedAt?: string;
-    selectedTipIds?: string[];
     token_meta?: {
         access_token?: string;
         expires_at?: string;
@@ -126,12 +114,3 @@ export interface ScoreOptions {
     proxyValue?: number;
 }
 
-export interface ExemplaryPost {
-    id: string;
-    account_id: string;
-    platform: Platform;
-    text: string;
-    explanation: string;
-    created_at: string;
-    updated_at: string;
-}

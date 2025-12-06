@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { optimizeSystemPrompt } from "@/lib/services/optimization-service";
+import { optimizeConcept } from "@/lib/services/optimization-service";
 
 export async function POST(request: Request) {
     try {
@@ -13,7 +13,7 @@ export async function POST(request: Request) {
             );
         }
 
-        const result = await optimizeSystemPrompt(accountId);
+        const result = await optimizeConcept(accountId);
 
         return NextResponse.json({ ok: true, result });
     } catch (error) {

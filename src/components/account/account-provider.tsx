@@ -63,25 +63,25 @@ export function AccountProvider({
 
     const firstAccountId = sanitizedAccounts[0]?.id ?? null;
 
+    // Use server-provided value for initial render to prevent hydration mismatch
     const [selectedAccountId, setSelectedAccountIdState] = useState<string | null>(
-        () => {
-            if (typeof window === "undefined") {
-                return initialSelectedAccountId ?? firstAccountId;
-            }
-
-            const stored = window.localStorage.getItem(STORAGE_KEY);
-            if (stored && sanitizedAccounts.some((account) => account.id === stored)) {
-                return stored;
-            }
-
-            const cookieValue = readCookieValue(STORAGE_KEY);
-            if (cookieValue && sanitizedAccounts.some((account) => account.id === cookieValue)) {
-                return cookieValue;
-            }
-
-            return initialSelectedAccountId ?? firstAccountId;
-        },
+        initialSelectedAccountId ?? firstAccountId
     );
+
+    // After mount, sync with localStorage/cookie if available
+    useEffect(() => {
+        const stored = window.localStorage.getItem(STORAGE_KEY);
+        if (stored && sanitizedAccounts.some((account) => account.id === stored)) {
+            setSelectedAccountIdState(stored);
+            return;
+        }
+
+        const cookieValue = readCookieValue(STORAGE_KEY);
+        if (cookieValue && sanitizedAccounts.some((account) => account.id === cookieValue)) {
+            setSelectedAccountIdState(cookieValue);
+            return;
+        }
+    }, [sanitizedAccounts]);
 
     useEffect(() => {
         if (!selectedAccountId && firstAccountId) {

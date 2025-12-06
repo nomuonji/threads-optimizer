@@ -8,8 +8,6 @@ import type { AccountDoc, PostDoc, DraftDoc } from '@/lib/types';
 import { AddAccountButton } from '@/components/add-account-button';
 import { SyncControls } from '@/components/sync-controls';
 import { SmartTweetGenerator } from '@/components/smart-tweet-generator';
-import { ExemplaryPostManager } from '@/components/exemplary-post-manager';
-import { AccountTipsControl } from '@/components/account-tips-control';
 import { AccountSettingsControl } from '@/components/account-settings-control';
 import { useAccountContext } from '@/components/account/account-provider';
 
@@ -302,11 +300,6 @@ export function DashboardClient({
                         </div>
 
                         <SmartTweetGenerator accounts={accountOptions} />
-
-                        <div className="grid gap-6 md:grid-cols-2">
-                            <ExemplaryPostManager selectedAccountId={selectedAccount?.id ?? null} />
-                            <AccountTipsControl account={selectedAccount} onAccountUpdate={handleAccountUpdate} />
-                        </div>
 
                         {errors.quotaExceeded && (
                             <p className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-700">

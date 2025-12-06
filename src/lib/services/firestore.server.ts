@@ -1,5 +1,5 @@
 import { adminDb } from "@/lib/firebase/admin";
-import { AccountDoc, PostDoc, DraftDoc, Tip, RankingFilter, SettingsDoc } from "@/lib/types";
+import { AccountDoc, PostDoc, DraftDoc, RankingFilter } from "@/lib/types";
 import { DateTime } from "luxon";
 
 // --- Account Functions ---
@@ -116,11 +116,6 @@ export async function listDrafts(accountId?: string): Promise<DraftDoc[]> {
     return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as DraftDoc));
 }
 
-// --- Tip Functions ---
-export async function getAllTips(): Promise<Tip[]> {
-    const snapshot = await adminDb.collection("tips").orderBy("created_at", "desc").get();
-    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Tip));
-}
 
 // --- Usage Functions ---
 export async function getRapidApiUsage(): Promise<{ month: string, count: number }> {
@@ -154,27 +149,4 @@ export async function getAccountDashboardData(accountId: string) {
 export async function getSystemStatus() {
     const doc = await adminDb.collection("system").doc("status").get();
     return doc.data() as { lastSchedulerRun?: string; lastSchedulerRunResult?: { published: number; timestamp: string } } | undefined;
-}
-
-// --- Settings Functions ---
-// --- Settings Functions ---
-export async function fetchSystemInstruction(accountId?: string): Promise<string | undefined> {
-    const docId = accountId ? `account_${accountId}` : "default";
-    const doc = await adminDb.collection("settings").doc(docId).get();
-
-    if (!doc.exists && accountId) {
-        // Fallback to default if account specific setting doesn't exist
-        const defaultDoc = await adminDb.collection("settings").doc("default").get();
-        if (!defaultDoc.exists) return undefined;
-        return (defaultDoc.data() as SettingsDoc).systemPrompt;
-    }
-
-    if (!doc.exists) return undefined;
-    const data = doc.data() as SettingsDoc;
-    return data.systemPrompt;
-}
-
-export async function updateSystemInstruction(newPrompt: string, accountId?: string): Promise<void> {
-    const docId = accountId ? `account_${accountId}` : "default";
-    await adminDb.collection("settings").doc(docId).set({ systemPrompt: newPrompt }, { merge: true });
 }
