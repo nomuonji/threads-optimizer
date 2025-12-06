@@ -1,6 +1,6 @@
 
 import "dotenv/config";
-import { fetchTopPosts, getAccount, upsertPost } from "../src/lib/services/firestore.server";
+import { fetchTopPosts, fetchRecentPosts, getAccount, upsertPost } from "../src/lib/services/firestore.server";
 
 async function main() {
     const args = process.argv.slice(2);
@@ -20,9 +20,10 @@ async function main() {
     }
 
     try {
-        const [account, topPosts] = await Promise.all([
+        const [account, topPosts, recentPosts] = await Promise.all([
             getAccount(accountId),
-            fetchTopPosts(accountId, 15)
+            fetchTopPosts(accountId, 20),
+            fetchRecentPosts(accountId, 20)
         ]);
 
         if (!account) {
@@ -37,6 +38,12 @@ async function main() {
                 platform: account.platform,
                 current_concept: account.concept
             },
+            recent_posts: recentPosts.map(p => ({
+                text: p.text,
+                score: p.score,
+                metrics: p.metrics,
+                created_at: p.created_at
+            })),
             top_posts: topPosts.map(p => ({
                 text: p.text,
                 score: p.score,

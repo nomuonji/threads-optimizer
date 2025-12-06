@@ -1,0 +1,37 @@
+name: Optimization & Drafting Loop
+
+on:
+  schedule:
+    # 2日に1回 (奇数日のJST 9:00 / UTC 0:00) に実行
+    - cron: '0 0 1-31/2 * *'
+  workflow_dispatch:
+
+jobs:
+  optimize-concept:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install tsx
+        run: npm install -g tsx
+
+      - name: Optimize Plansetting Concept
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          # アカウントID: threads_plansetting を指定して最適化を実行
+          # 直近の投稿パフォーマンス(平均スコア)を評価し、ベスト更新なら記録、悪化なら修正を行う
+          npm run optimize -- --account=threads_plansetting

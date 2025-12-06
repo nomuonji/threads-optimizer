@@ -10,6 +10,9 @@ export interface AccountDoc {
     connected: boolean;
     scopes: string[];
     concept?: string;
+    concept_score?: number;
+    concept_best?: string;
+    concept_best_score?: number;
     autoPostEnabled?: boolean;
     optimizationEnabled?: boolean;
     postSchedule?: string[];
