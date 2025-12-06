@@ -3,29 +3,27 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
+    "list": "tsx scripts/list.ts",
+    "sync": "tsx scripts/sync.ts",
+    "draft": "tsx scripts/draft.ts",
+    "optimize": "tsx scripts/optimize.ts",
+    "analyze": "tsx scripts/analyze-data.ts",
+    "update-concept": "tsx scripts/update-concept.ts",
+    "dashboard": "tsx scripts/dashboard.ts",
     "lint": "eslint"
   },
   "dependencies": {
+    "dotenv": "^16.4.7",
     "firebase": "^12.6.0",
     "firebase-admin": "^13.6.0",
     "google-auth-library": "^10.5.0",
     "luxon": "^3.7.2",
-    "next": "16.0.7",
-    "react": "19.2.0",
-    "react-dom": "19.2.0"
+    "tsx": "^4.7.1",
+    "typescript": "^5"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4",
     "@types/luxon": "^3.7.1",
     "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "eslint": "^9",
-    "eslint-config-next": "16.0.7",
-    "tailwindcss": "^4",
-    "typescript": "^5"
+    "eslint": "^9"
   }
 }

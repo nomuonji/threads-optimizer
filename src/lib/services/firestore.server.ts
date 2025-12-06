@@ -150,3 +150,48 @@ export async function getSystemStatus() {
     const doc = await adminDb.collection("system").doc("status").get();
     return doc.data() as { lastSchedulerRun?: string; lastSchedulerRunResult?: { published: number; timestamp: string } } | undefined;
 }
+
+// --- Optimization Functions ---
+export async function saveConcept(accountId: string, concept: string): Promise<void> {
+    await adminDb.collection("accounts").doc(accountId).update({
+        concept,
+        updated_at: new Date().toISOString(),
+    });
+}
+
+export async function getOptimizationHistory(accountId: string) {
+    try {
+        const snapshot = await adminDb
+            .collection("optimization_history")
+            .where("account_id", "==", accountId)
+            .orderBy("created_at", "desc")
+            .limit(20)
+            .get();
+
+        return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+    } catch (error) {
+        const message = (error as Error).message ?? "";
+        // If index is missing, fallback to unordered query and sort in-memory
+        if (message.includes("requires an index")) {
+            console.warn("[getOptimizationHistory] Index missing, using fallback query");
+            const fallbackSnapshot = await adminDb
+                .collection("optimization_history")
+                .where("account_id", "==", accountId)
+                .get();
+
+            const docs = fallbackSnapshot.docs.map((doc) => ({
+                id: doc.id,
+                ...doc.data()
+            })) as Array<{ id: string; created_at?: string;[key: string]: unknown }>;
+
+            return docs
+                .sort((a, b) => {
+                    const timeA = a.created_at ? DateTime.fromISO(a.created_at).toMillis() : 0;
+                    const timeB = b.created_at ? DateTime.fromISO(b.created_at).toMillis() : 0;
+                    return timeB - timeA;
+                })
+                .slice(0, 20);
+        }
+        throw error;
+    }
+}
